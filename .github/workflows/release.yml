@@ -48,6 +48,8 @@ jobs:
               owner: owner,
               repo: repo
             });
+            console.log("---------------------------------------------")
+            console.log(releases)
             var crypto = require('crypto')
             var fs = require('fs')
             const url = require('url');
@@ -56,6 +58,8 @@ jobs:
             for (const r of releases["data"]) {
               if (r.draft && `refs/tags/${r.tag_name}` == "${{ github.ref }}") {
                 for (const asset of r.assets) {
+                  console.log("---------------------------------------------")
+                  console.log(asset)
                   var release_asset = await github.repos.getReleaseAsset({ headers: {accept: `application/octet-stream`}, accept: `application/octet-stream`, owner: owner, repo: repo, asset_id: asset.id });
                   const hash = crypto.createHash('sha256');
                   let http_promise = new Promise((resolve, reject) => {
@@ -73,6 +77,7 @@ jobs:
                 }
               }
             }
+            console.log("checksums")
             console.log(checksums)
             return `${checksums['kapp-darwin-amd64']}  ./hello-world-darwin-amd64
             ${checksums['hello-world-darwin-arm64']}  ./hello-world-darwin-arm64
